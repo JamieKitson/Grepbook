@@ -1,6 +1,5 @@
 <?php
 
-
 error_reporting(E_ALL);
 ini_set('display_errors', '1');
 
@@ -18,99 +17,79 @@ $userId = $facebook->getUser();
 
 function ifExists($key, $arr)
 {
-	if (array_key_exists($key, $arr))
-		return $arr[$key];
+  if (array_key_exists($key, $arr))
+    return $arr[$key];
+}
+
+function getDateFromLine($fileName, $startAt, $seek)
+{
+  $strDate = '';
+  $f = fopen($fileName, 'r');
+  $pipes = 0;
+
+  do
+  {
+    fseek($f, $startAt++, $seek);
+    $char = fgetc($f);
+    if ($char == "|")
+      $pipes++; 
+    if ($pipes == 2)
+      break;
+    if (($pipes == 1) && ($char !== "|"))
+      $strDate = $strDate . $char;
+  }
+  while ($char !== false);
+
+  fclose($f);
+  $uDate = strtotime($strDate);
+  echo "\nstrDate:$strDate\nuDate:$uDate\n";
+  return $uDate;
 }
 
 function lastDate($fn)
 {
+  $f = fopen($fn, 'r');
+  $cursor = -2;
 
-$line = '';
-
-$f = fopen($fn, 'r');
-$cursor = -1;
-$char = '';
-$i = 0;
-
-while ($char !== false) {
+  do
+  {
     fseek($f, $cursor--, SEEK_END);
     $char = fgetc($f);
-    if ($char == "|")
-	$i++; 
-    if ($i == 3)
-  	break;
-    if (($i == 2) && ($char !== "|"))
-    	$line = $char . $line;
-}
+  }
+  while ($char !== "\r" && $char !== "\n" && $char !== false);
 
- echo $line;
-$line = strtotime($line);
-echo "|";
- echo $line;
-echo "|";
-return $line;
-
-
+  fclose($f);
+//  echo "\n$cursor\n";
+  return getDateFromLine($fn, $cursor + 1, SEEK_END);
 }
 
 function firstDate($fn)
 {
-
-$line = '';
-
-$f = fopen($fn, 'r');
-$cursor = 0;
-
-$char = fgetc($f);
-
-$i = 0;
-
-while ($char !== false) {
-    if ($char == "|")
-	$i++; 
-    fseek($f, $cursor++);
-    $char = fgetc($f);
-    if ($i == 2)
-  	break;
-    if (($i == 1) && ($char !== "|"))
-    	$line = $line . $char;
+  return getDateFromLine($fn, 0, SEEK_SET);
 }
 
-//echo "until1";
- echo $line;
-$line = strtotime($line);
-echo "|";
- echo $line;
-echo "|";
-return $line;
-
-
-}
-
-function writeLine($post, $h)
+function writeLine($post, $fileHandle)
 { 
-	$ids = explode("_", $post['id']);
-	$l = $ids[1];
-	$l = $l."|";
-	if (array_key_exists('created_time', $post))
-	{
-		$dt = strtotime($post['created_time']);
-		$l = $l.date('D M d G:i:s O Y', $dt);
-	}
-	$l = $l."|";
-	$l = $l.ifExists('message', $post);
-	$l = $l.ifExists('story', $post);
-	$l = $l."|";
-	$l = $l.ifExists('link', $post);
-	$l = $l."\n";
-	fwrite($h, $l);
-	echo $l;
-	return $dt;
+  $ids = explode("_", $post['id']);
+  $l = $ids[1];
+  $l = $l."|";
+  if (array_key_exists('created_time', $post))
+  {
+    $dt = strtotime($post['created_time']);
+    $l = $l.date('D M d G:i:s O Y', $dt);
+  }
+  $l = $l."|";
+  $l = $l.ifExists('message', $post);
+  $l = $l.ifExists('story', $post);
+  $l = $l."|";
+  $l = $l.ifExists('link', $post);
+  $l = $l."\n";
+  fwrite($fileHandle, $l);
+  echo $l;
+  return $dt;
 }
 
-// echo $userId;   
-
-    if (!$userId) { ?>
+if (!$userId) { ?>
 
 <html>
   <body>
@@ -152,33 +131,29 @@ $fn = 'files/'.$userId;
 if (file_exists($fn))
 {
 	$until = '&until='.lastDate($fn);
-//echo $until;
 } else {
 	$until = '';
 }
 
-// while (true)
-for ($i = 0; $i < 10; $i++)
+//for ($i = 0; $i < 10; $i++)
+while (true)
 {
 
-$b = $facebook->api('/me/feed?limit=1000'.$until);// + $userId);// + '/feed');
+echo "\nuntil:$until\n";
 
-// echo print_r($b);
-// echo "\n".count($b['data'])."\n";
+  $b = $facebook->api('/me/feed?limit=1000'.$until);// + $userId);// + '/feed');
 
-if (count($b['data']) === 0)
-	break;
+  if (count($b['data']) === 0)
+    break;
 
-foreach($b['data'] as $post)
-{
-	$h = fopen($fn, 'a');
-	$dt = writeLine($post, $h);
-	fclose($h);
-}
+  foreach($b['data'] as $post)
+  {
+    $f = fopen($fn, 'a');
+    $dt = writeLine($post, $f);
+    fclose($f);
+  }
 
-$until = '&until='.$dt;
-
-// echo $until;
+  $until = '&until='.$dt;
 
 }
 
@@ -194,10 +169,12 @@ echo "\nUNTIL-SINCE-$since\n";
 for ($i = 0; $i < 10; $i++)
 {
 
+  echo "\nsince:$since\n";
+
 $b = $facebook->api('/me/feed?limit=1000'.$since);
 
 if (count($b['data']) === 0)
-	return;
+	break;
 
 $since = '';
 
