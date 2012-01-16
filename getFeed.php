@@ -1,12 +1,32 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
+# Called with no arguments: will bring back everything in a user's feed 
+# Called with until/since date: will bring back everything until/since unix date stamp
+# Facebook seems to limit data to one year.
+
+/*
+if (($argc != 3) && ($argc != 1))
+{
+  echo $argv;
+  exit('Must be called with zero or two arguments: "since"/"until" and a unix date stamp.');
+}
+
+if ($argc == 3)
+{
+  if (($argv[1] !== "since") && ($argv[1] != "until"))
+    exit('First parameter must be either "since" or "until".');
+  if (intval($argv[2]) == 0)
+    exit('Second parameter must be a unix date stamp, ie, an integer.');
+}
+*/
+
+// error_reporting(E_ALL);
+// ini_set('display_errors', '1');
 
 define('YOUR_APP_ID', '277863212273184');
 
 //uses the PHP SDK.  Download from https://github.com/facebook/php-sdk
-require 'facebook-php-sdk-5a88ed7/src/facebook.php'; // 'facebook-platform/php/facebook.php';
+require 'facebook-php-sdk-5a88ed7/src/facebook.php'; 
 
 $facebook = new Facebook(array(
   'appId'  => YOUR_APP_ID,
@@ -21,54 +41,7 @@ function ifExists($key, $arr)
     return $arr[$key];
 }
 
-function getDateFromLine($fileName, $startAt, $seek)
-{
-  $strDate = '';
-  $f = fopen($fileName, 'r');
-  $pipes = 0;
-
-  do
-  {
-    fseek($f, $startAt++, $seek);
-    $char = fgetc($f);
-    if ($char == "|")
-      $pipes++; 
-    if ($pipes == 2)
-      break;
-    if (($pipes == 1) && ($char !== "|"))
-      $strDate = $strDate . $char;
-  }
-  while ($char !== false);
-
-  fclose($f);
-  $uDate = strtotime($strDate);
-  echo "\nstrDate:$strDate\nuDate:$uDate\n";
-  return $uDate;
-}
-
-function lastDate($fn)
-{
-  $f = fopen($fn, 'r');
-  $cursor = -2;
-
-  do
-  {
-    fseek($f, $cursor--, SEEK_END);
-    $char = fgetc($f);
-  }
-  while ($char !== "\r" && $char !== "\n" && $char !== false);
-
-  fclose($f);
-//  echo "\n$cursor\n";
-  return getDateFromLine($fn, $cursor + 1, SEEK_END);
-}
-
-function firstDate($fn)
-{
-  return getDateFromLine($fn, 0, SEEK_SET);
-}
-
-function writeLine($post, $fileHandle)
+function writeLine($post)
 { 
   $ids = explode("_", $post['id']);
   $l = $ids[1];
@@ -84,122 +57,63 @@ function writeLine($post, $fileHandle)
   $l = $l."|";
   $l = $l.ifExists('link', $post);
   $l = $l."\n";
-  fwrite($fileHandle, $l);
   echo $l;
   return $dt;
 }
 
-if (!$userId) { ?>
+if (!$userId) { 
 
-<html>
-  <body>
-    <div id="fb-root"></div>
-    <fb:login-button></fb:login-button>
-    <script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '<?= YOUR_APP_ID ?>',
-          status     : true, 
-          cookie     : true,
-          xfbml      : true,
-          oauth      : true,
-        });
-
-        FB.Event.subscribe('auth.login', function(response) {
-          window.location.reload();
-        });
-      };
-
-      (function(d){
-         var js, id = 'facebook-jssdk'; if (d.getElementById(id)) {return;}
-         js = d.createElement('script'); js.id = id; js.async = true;
-         js.src = "//connect.facebook.net/en_US/all.js";
-         d.getElementsByTagName('head')[0].appendChild(js);
-       }(document));
-    </script>
-  </body>
-</html>
-
-<?php
+  throw new Exception('Not logged in to Facebook.');
 
 } else {
 
-header("Content-Type: text/plain");
+  header("Content-Type: text/plain");
 
-$fn = 'files/'.$userId;
+error_reporting(E_ALL);
+ini_set('display_errors', '1');
 
-if (file_exists($fn))
-{
-	$until = '&until='.lastDate($fn);
-} else {
-	$until = '';
-}
-
-//for ($i = 0; $i < 10; $i++)
-while (true)
-{
-
-echo "\nuntil:$until\n";
-
-  $b = $facebook->api('/me/feed?limit=1000'.$until);// + $userId);// + '/feed');
-
-  if (count($b['data']) === 0)
-    break;
-
-  foreach($b['data'] as $post)
+  if (array_key_exists('suntil', $_GET))
   {
-    $f = fopen($fn, 'a');
-    $dt = writeLine($post, $f);
-    fclose($f);
+    $suntil = $_GET['suntil'];
+    $inDate = $_GET['date']; 
+    $param = "$suntil=$inDate";
+  } else {
+    $suntil = "until";
+    $param = "";
   }
 
-  $until = '&until='.$dt;
+  // echo "\n$param\n";
+
+  while (true)
+  {
+
+    $b = $facebook->api('/me/feed?limit=500&'.$param);
+
+    if (count($b['data']) === 0)
+      break;
+
+    $firstDate = '';
+
+    foreach($b['data'] as $post)
+    {
+      $dt = writeLine($post);
+      if ($firstDate == '')
+        $firstDate = $dt;
+    }
+
+    $lastDate = $dt;
+
+    if ($suntil == "until")
+    {
+      $param = "until=$dt";
+    } else {
+      $param = "until=$dt&since=$inDate";
+    }
+
+    // echo "\n$param\n";
+
+  }
 
 }
-
-if (file_exists($fn))
-{
-	$since = '&since='.firstDate($fn);
-} else {
-	$since = '';
-}
-
-echo "\nUNTIL-SINCE-$since\n";
-
-for ($i = 0; $i < 10; $i++)
-{
-
-  echo "\nsince:$since\n";
-
-$b = $facebook->api('/me/feed?limit=1000'.$since);
-
-if (count($b['data']) === 0)
-	break;
-
-$since = '';
-
-foreach($b['data'] as $post)
-{
-	$h = fopen($fn, 'r+');
-	$dt = writeLine($post, $h);
-	fclose($h);
-	if ($since == '')
-		$since = '&since='.$dt;
-}
-
-
-// echo $until;
-
-}
-
-}
-
-// echo print_r($b);
-
-/*
-//print_r($b);
 
 ?>
-
-    <?php } else { ?>
-*/ ?>
