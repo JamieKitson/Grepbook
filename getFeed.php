@@ -1,24 +1,8 @@
 <?php
 
-# Called with no arguments: will bring back everything in a user's feed 
-# Called with until/since date: will bring back everything until/since unix date stamp
-# Facebook seems to limit data to one year.
-
-/*
-if (($argc != 3) && ($argc != 1))
-{
-  echo $argv;
-  exit('Must be called with zero or two arguments: "since"/"until" and a unix date stamp.');
-}
-
-if ($argc == 3)
-{
-  if (($argv[1] !== "since") && ($argv[1] != "until"))
-    exit('First parameter must be either "since" or "until".');
-  if (intval($argv[2]) == 0)
-    exit('Second parameter must be a unix date stamp, ie, an integer.');
-}
-*/
+// Should be called with optional me/feed Graph API params until and/or since.
+// To page through older posts use until.
+// It seems that to page through newer statuses you have to use both until and since parameters.
 
 // error_reporting(E_ALL);
 // ini_set('display_errors', '1');
@@ -56,10 +40,12 @@ function writeLine($post)
   $l = $l.ifExists('story', $post);
   $l = $l."|";
   $l = $l.ifExists('link', $post);
-  $l = $l."\n";
+  $l = $l."\n\r";
   echo $l;
   return $dt;
 }
+
+echo print_r($argv);
 
 if (!$userId) { 
 
@@ -69,50 +55,26 @@ if (!$userId) {
 
   header("Content-Type: text/plain");
 
-error_reporting(E_ALL);
-ini_set('display_errors', '1');
+  error_reporting(E_ALL);
+  ini_set('display_errors', '1');
 
-  if (array_key_exists('suntil', $_GET))
+  $params = '?limit=500';
+  
+  foreach ($_GET as $key => $value)
   {
-    $suntil = $_GET['suntil'];
-    $inDate = $_GET['date']; 
-    $param = "$suntil=$inDate";
-  } else {
-    $suntil = "until";
-    $param = "";
+    $params .= "&$key=$value";
   }
 
   // echo "\n$param\n";
 
-  while (true)
+  $b = $facebook->api('/me/feed?'.$params);
+
+  foreach($b['data'] as $post)
   {
-
-    $b = $facebook->api('/me/feed?limit=500&'.$param);
-
-    if (count($b['data']) === 0)
-      break;
-
-    $firstDate = '';
-
-    foreach($b['data'] as $post)
-    {
-      $dt = writeLine($post);
-      if ($firstDate == '')
-        $firstDate = $dt;
-    }
-
-    $lastDate = $dt;
-
-    if ($suntil == "until")
-    {
-      $param = "until=$dt";
-    } else {
-      $param = "until=$dt&since=$inDate";
-    }
-
-    // echo "\n$param\n";
-
+    $dt = writeLine($post);
   }
+
+ // echo "\n$param\n";
 
 }
 
