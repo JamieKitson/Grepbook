@@ -9,10 +9,19 @@ hi
 
 END
 
-echo $(dirname $0)
-SCRIPT_FILENAME=/var/www/fb.kitten-x.com/getFeed.php
-  echo $(php-cgi getFeed.php)
-unset SCRIPT_FILENAME
+
+
+#echo $(dirname $0)
+#SCRIPT_FILENAME='/var/www/fb.kitten-x.com/getFeed.php'
+#  feed=$(php-cgi -f "until=1326234060")
+#  echo $feed
+#  lastline=$(echo "$feed" | tail -n 2)
+#  lastdate=$(date +%s -d "$(echo $lastline | cut -d '|' -f 2 )")
+#  params="?until=$lastdate"
+#  echo $params
+#unset SCRIPT_FILENAME
+#
+#exit
 
 feed="a"
 params=""
@@ -25,8 +34,11 @@ do
 #  do
 #    feed="$feed\n$line"
 #  done
-  feed=$(curl -sb "$HTTP_COOKIE" http://fb.kitten-x.com/getFeed.php$params)
-  echo $feed
+  echo $(curl -sb "$HTTP_COOKIE" http://fb.kitten-x.com/getFeed.php$params)
+  userId=$(echo $feed | head -n 1)
+  echo "userid:$userId"
+  feed=$(echo $feed | sed 1d)
+  echo "feed:$feed"
   lastline=$(echo "$feed" | tail -n 2)
   lastdate=$(date +%s -d "$(echo $lastline | cut -d '|' -f 2 )")
   params="?until=$lastdate"
