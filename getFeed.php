@@ -22,7 +22,7 @@ $userId = $facebook->getUser();
 function ifExists($key, $arr)
 {
   if (array_key_exists($key, $arr))
-    return $arr[$key];
+    return str_replace("\n", " ", $arr[$key]);
 }
 
 function writeLine($post)
@@ -40,12 +40,12 @@ function writeLine($post)
   $l = $l.ifExists('story', $post);
   $l = $l."|";
   $l = $l.ifExists('link', $post);
-  $l = $l."\n\r";
+  $l = $l."\n";
   echo $l;
   return $dt;
 }
 
-echo print_r($argv);
+// echo print_r($argv);
 
 if (!$userId) { 
 
@@ -58,23 +58,25 @@ if (!$userId) {
   error_reporting(E_ALL);
   ini_set('display_errors', '1');
 
-  $params = '?limit=500';
+  // echo "$userId\n";
+  
+  $params = '?limit=200';
   
   foreach ($_GET as $key => $value)
   {
     $params .= "&$key=$value";
   }
 
-  // echo "\n$param\n";
+  // echo "\n$params\n";
 
-  $b = $facebook->api('/me/feed?'.$params);
+  $b = $facebook->api('/me/feed'.$params);
+
+  // echo print_r($b);
 
   foreach($b['data'] as $post)
   {
     $dt = writeLine($post);
   }
-
- // echo "\n$param\n";
 
 }
 

@@ -53,7 +53,7 @@ $(document).ready(function()
   </head>
   <body>
     <div id="fb-root"></div>
-    <fb:login-button autologoutlink="true" size="large"></fb:login-button>
+    <fb:login-button autologoutlink="true" size="large" data-scope="read_stream"></fb:login-button>
     <script>
       window.fbAsyncInit = function() {
         FB.init({

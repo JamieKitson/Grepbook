@@ -9,58 +9,47 @@ hi
 
 END
 
-
-
-#echo $(dirname $0)
-#SCRIPT_FILENAME='/var/www/fb.kitten-x.com/getFeed.php'
-#  feed=$(php-cgi -f "until=1326234060")
-#  echo $feed
-#  lastline=$(echo "$feed" | tail -n 2)
-#  lastdate=$(date +%s -d "$(echo $lastline | cut -d '|' -f 2 )")
-#  params="?until=$lastdate"
-#  echo $params
-#unset SCRIPT_FILENAME
-#
-#exit
-
-feed="a"
 params=""
+newLines=0
 
-#while [ -n $feed ]
-for i in {0..1}
+userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
+file="files/$userId"
+
+echo "<a href=\"http://$file\">userId:$userId</a>"
+
+if [ -f "$file" ]
+then
+  lastLine=$(tail -n 1 "$file")
+  newLines=$(wc -l < "$file")
+  echo "File has $newLines lines"
+fi
+
+lines=$(( $newLines - 1))
+
+#while [ $newLines -gt $lines ]
+for i in {0..2}
 do
-#  IFS=''
-#  for line in $(curl -sb "$HTTP_COOKIE" http://fb.kitten-x.com/getFeed.php$params)
-#  do
-#    feed="$feed\n$line"
-#  done
-  echo $(curl -sb "$HTTP_COOKIE" http://fb.kitten-x.com/getFeed.php$params)
-  userId=$(echo $feed | head -n 1)
-  echo "userid:$userId"
-  feed=$(echo $feed | sed 1d)
-  echo "feed:$feed"
-  lastline=$(echo "$feed" | tail -n 2)
-  lastdate=$(date +%s -d "$(echo $lastline | cut -d '|' -f 2 )")
-  params="?until=$lastdate"
-  echo $params
-done
 
-#unset IFS
+  lines=$newLines
+
+  if [ -n "$lastLine" ]
+  then
+    engDate=$(echo "$lastLine" | cut -d '|' -f 2 )
+    echo "Getting from $engDate"
+    lastdate=$(date +%s -d "$(echo $engDate)")
+    params="?until=$lastdate"
+    echo $params
+  fi
+
+  curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getFeed.php$params" >> $file
+
+  lastLine=$(tail -n 1 "$file")
+  
+  newLines=$(wc -l < $file)
+  echo "File has $newLines lines"
+
+done
 
     exit
 
-IFS=\;
-
-for cookie in  $HTTP_COOKIE 
-do 
-  IFS="="
-  set -- $cookie
-  if [ $1 = "PHPSESSID" ]
-  then
-    echo $(curl -b $HTTP_COOKIE http://fb.kitten-x.com/getFeed.php)
-    break
-  fi
-done 
-
-unset IFS
 
