@@ -87,7 +87,7 @@ getStatuses $tmp $firstdate
 cat $tmp $afile > $tmp2
 cp $tmp2 $afile
 
-echo "Finished, backup file: <a href=\"$file\">userId:$userId</a>"
+echo "Finished, backup file: <a href=\"$afile\">userId:$userId</a>"
 
 exit
 

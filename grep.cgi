@@ -16,7 +16,8 @@ do
     IFS="|"
     set -- $line
     echo '<a href="http://facebook.com/'$userId'/posts/'$1'">'$2'</a>'
-    echo $3
+#    echo $3
+    echo $(echo $3 | sed -r 's/https?:\/\/[^ ]+/<a href="&">&<\/a>/g')
     if [ -n "$4" ]
     then
       echo '<a href="'$4'">Associated link</a>'
