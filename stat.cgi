@@ -6,7 +6,9 @@ Content-Type: text/plain
 
 END
 
-for file in $(find files/ -name ${1}-*)
+userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
+
+for file in $(find files/ -name ${userId}-*)
 do
 
   lastLine=$(tail -n 1 "$file")

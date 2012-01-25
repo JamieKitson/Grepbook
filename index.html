@@ -4,15 +4,14 @@
     <script type="text/javascript">
 
 var stop;
-var userID;
+// var userID;
 
 function go()
 {
-
-    stop = false;
-    stat();
-    get();
-    dot();
+  stop = false;
+  stat();
+  get();
+  dot();
 }
 
 function dot()
@@ -27,33 +26,31 @@ function stat()
 {
   if (stop)
     return;
-       $.ajax({
-                url: '/stat.cgi?' + userID,
-                    success: gotStat,
-                        error: 
-                                function (xhr, textStatus, thrownError) 
-                                        { 
-                                                  alert("An error occured contacting " + url + " status " + xhr.status + " error message: \n" + xhr.responseText); 
-                                        }
-              });
-    setTimeout(stat, 10000);
+  $.ajax({
+    url: '/stat.cgi', // ?' + userID,
+    success: gotStat,
+    error: 
+      function (xhr, textStatus, thrownError) 
+      { 
+        alert("An error occured contacting " + url + " status " + xhr.status + " error message: \n" + xhr.responseText); 
+      }
+    });
+  setTimeout(stat, 10000);
 }
 
 
 function get()
 {
-
-       $.ajax({
-                url: '/writeFeed.cgi',
-                    success: got,
-                        error: 
-                                function (xhr, textStatus, thrownError) 
-                                        { 
-                                        stop = true;
-                                                  alert("An error occured contacting " + url + " status " + xhr.status + " error message: \n" + xhr.responseText); 
-                                        }
-              });
-          return false; 
+  $.ajax({
+    url: '/writeFeed.cgi',
+    success: got,
+    error: 
+      function (xhr, textStatus, thrownError) 
+      { 
+        stop = true;
+        alert("An error occured contacting " + url + " status " + xhr.status + " error message: \n" + xhr.responseText); 
+      }
+    });
 }
 
 function got(s)
@@ -72,28 +69,48 @@ function appendLine(s)
   $('#output').html(s);
 }
 
-function showFeed(s)
+function grep()
 {
-  //alert(s);
-  $('#output').append(s);
+  $.ajax({
+    url: '/grep.cgi?' + $('#grepText').val(),
+    success: gotGrep,
+    error: 
+      function (xhr, textStatus, thrownError) 
+      { 
+        alert("An error occured contacting " + url + " status " + xhr.status + " error message: \n" + xhr.responseText); 
+      }
+    });
 }
 
-$(document).ready(function() 
-    {
-      $('#flickrmorelink').click(get);
-            });
+function gotGrep(s)
+{
+  $('#grep').html(s);
+}
 
   </script>
-
+  <title>Grepbook</title>
+  <style>
+  body { margin: 0; font-family: "lucida grande",tahoma,verdana,arial,sans-serif; }
+  h1 { background-color: #3B5998; border: 1px solid #133783; color: white; margin: 0; padding: 0.2em 0.9em; }
+  #content { margin: 1em; }
+  #content>div { margin: 1em; }
+  #grep { font-size: 11px; }
+  </style>
   </head>
   <body>
-    <div id="intro">
+    <h1>Grepbook</h1>
+  <div id="content">
+    <div class="subheading">
+      A simple backup/search tool for your Facebook news feed.
+    </div>
+    <div class="intro">
       Once you have logged in click go to start backing up your Facebook feed. 
       Backup is done in batches of 200 which will take 10-20 seconds each. 
       Backup file line count and last status date will be updated at 10 second intervals.
       Once the backup is complete a link to your backup file will be shown.
     </div>
     <div id="fb-root"></div>
+    <div id="buttons">
     <fb:login-button autologoutlink="true" size="large" data-scope="read_stream"></fb:login-button>
     <script>
       window.fbAsyncInit = function() {
@@ -113,9 +130,11 @@ $(document).ready(function()
 
         if (response.status === 'connected') 
         {
-          userID = response.authResponse.userID;
+          // userID = response.authResponse.userID;
           $('#go').click(go);
           $('#go').attr("disabled", false);
+          $('#grepButton').click(grep);
+          $('#grepButton').attr("disabled", false);
         }
       } );
 
@@ -129,10 +148,14 @@ $(document).ready(function()
          d.getElementsByTagName('head')[0].appendChild(js);
        }(document));
     </script>
-    <button id="go" disabled="disabled">go</button>
-    <div id="dots" ></div>
-    <div id="info" ></div>
-    <div id="output" ></div>
+    <button id="go" disabled="disabled">backup</button>
+    </div>
+    <div id="dots"></div>
+    <div id="info"></div>
+    <div id="output"></div>
+    <div><input type="text" id="grepText"> <button id="grepButton" disabled="disabled">search</button></div>
+    <div id="grep"></div>
+  </div>
   </body>
 </html>
 
