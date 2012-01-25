@@ -7,21 +7,26 @@ Content-Type: text/plain
 END
 
 userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
+q="$1"
 
 for file in $(find files/ -name ${userId}-*)
 do
   IFS="$(echo -e "\n\r")"
-  for line in $(grep -i "$1" $file)
+  for line in $(grep -i "$q" "$file")
   do
     IFS="|"
     set -- $line
-    echo '<a href="http://facebook.com/'$userId'/posts/'$1'" target="_blank">'$2'</a>'
-    echo $(echo $3 | sed -r 's/https?:\/\/[^ ]+/<a href="&" target="_blank">&<\/a>/g')
+    date=$(date +"%d %b %Y %T" -d $2)
+    echo '<a href="http://facebook.com/'$userId'/posts/'$1'" target="_blank" class="datelink">'$date'</a>'
+    echo "<span class=\"post\">$3</span>"
+#    echo $(echo $3 | sed -r 's/https?:\/\/[^ ]+/<a href="&" target="_blank">&<\/a>/g')
     if [ -n "$4" ]
     then
-      echo '<a href="'$4'">Associated link</a>'
+      echo '<a href="'$4'" class="assoclink">Associated link</a>'
     fi
     echo "<br>"
   done
+  echo "<p>"
+  echo $(grep -ic "$q" "$file")" results found."
   unset IFS
 done

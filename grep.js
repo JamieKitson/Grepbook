@@ -66,12 +66,15 @@ function appendLine(s)
 
 function grep()
 {
+  stop = false;
+  dot();
   $.ajax({
     url: '/grep.cgi?' + $('#grepText').val(),
     success: gotGrep,
     error: 
       function (xhr, textStatus, thrownError) 
       { 
+        stop = true;
         alert("An error occured contacting " + url + " status " + xhr.status + " error message: \n" + xhr.responseText); 
       }
     });
@@ -79,5 +82,6 @@ function grep()
 
 function gotGrep(s)
 {
+  stop = true;
   $('#grep').html(s);
 }

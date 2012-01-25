@@ -3,13 +3,19 @@
   <head>
     <script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
     <script src="grep.js"></script>
-  <title>Grepbook</title>
+  <title>Grepbook - A simple backup/search tool for your Facebook news feed</title>
   <style>
-    body { margin: 0; font-family: "lucida grande",tahoma,verdana,arial,sans-serif; }
-    h1 { background-color: #3B5998; border: 1px solid #133783; color: white; margin: 0; padding: 0.2em 0.9em; }
-    #content { margin: 1em; }
-    #content>div { margin: 1em; }
-    #grep { font-size: 11px; }
+    body { margin: 0; font-family: "lucida grande", tahoma, verdana, arial, sans-serif; }
+    h1 { background-color: #3B5998; border: 1px solid #133783; color: white; margin: 0; padding: 5px 37px; }
+    a { color: #3B5998; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    #content { margin: 0 20px; border: 1px solid #CCCCCC; border-top: none; }
+    #content>div { margin: 20px }
+    #content>div:first-child { margin-top: 0; padding-top: 20px }
+    #grep { font-size: 0.7em; }
+    #ack { font-size: 0.8em; }
+ /*   .datelink { float: left; width: 150px;  }
+    .post { clear: both; } */
   </style>
   </head>
   <body>
@@ -19,13 +25,13 @@
       A simple backup/search tool for your Facebook news feed.
     </div>
     <div class="intro">
-      Once you have logged in click backup to start backing up your Facebook feed. 
+      Once you have logged in, click Backup to start backing up your Facebook feed. 
       Backup is done in batches of 200 which will take 10-20 seconds each. 
-      Backup file line count and last status date will be updated at 10 second intervals.
-      Once the backup is complete a link to your backup file will be shown.
+      Backup file line count and last status date will be updated at regular second intervals.
+      Once the backup is complete a link to your backup file will be shown and you can then search the file.
     </div>
     <div id="fb-root"></div>
-    <div id="buttons">
+    <div id="backupbuttons">
     <fb:login-button autologoutlink="true" size="large" data-scope="read_stream"></fb:login-button>
     <script>
       window.fbAsyncInit = function() {
@@ -70,13 +76,21 @@
          d.getElementsByTagName('head')[0].appendChild(js);
        }(document));
     </script>
-    <button id="go" disabled="disabled">backup</button>
+    <button id="go" disabled="disabled">Backup</button>
     </div>
     <div id="dots"></div>
     <div id="info"></div>
     <div id="output"></div>
-    <div><input type="text" id="grepText" disabled="disabled"> <button id="grepButton" disabled="disabled">search</button></div>
+    <div id="searchform">
+      <input type="text" id="grepText" disabled="disabled">
+      <button id="grepButton" disabled="disabled">Search</button>
+    </div>
     <div id="grep"></div>
+    <div id="ack">
+      <a href="https://github.com/JamieKitson/Grepbook/" target="_blank">Grepbook source</a>.
+      Written by <a href="http://jamiek.it" target="_blank">Jamie Kitson</a>.
+      Inspired by <a href="http://greptweet.com" target="_blank">Greptweet</a>.
+    </div>
   </div>
   </body>
 </html>
