@@ -23,7 +23,7 @@ $userId = $facebook->getUser();
     <script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
     <script type="text/javascript">
 
-var stop;
+var stop, userID;
 
 function go()
 {
@@ -47,7 +47,7 @@ function stat()
   if (stop)
     return;
        $.ajax({
-                url: '/stat.cgi?<?php echo $userId ?>',
+                url: '/stat.cgi?' + userID,
                     success: gotStat,
                         error: 
                                 function (xhr, textStatus, thrownError) 
@@ -63,7 +63,7 @@ function get()
 {
 
        $.ajax({
-                url: '/index.cgi',
+                url: '/writeFeed.cgi',
                     success: got,
                         error: 
                                 function (xhr, textStatus, thrownError) 
@@ -129,8 +129,10 @@ $(document).ready(function()
         });
 
       FB.getLoginStatus(function(response) {
+
         if (response.status === 'connected') 
         {
+          userID = response.authResponse.userID;
           $('#go').click(go);
           $('#go').attr("disabled", false);
         }
