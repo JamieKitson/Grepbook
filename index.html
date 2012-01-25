@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
   <head>
     <script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
@@ -49,6 +50,13 @@
           $('#go').attr("disabled", false);
           $('#grepButton').click(grep);
           $('#grepButton').attr("disabled", false);
+          $("#grepText").keyup(function(event)
+            {
+              if(event.keyCode == 13){
+                $("#grepButton").click();
+              }
+            });
+          $('#grepText').attr("disabled", false);
         }
       } );
 
@@ -67,7 +75,7 @@
     <div id="dots"></div>
     <div id="info"></div>
     <div id="output"></div>
-    <div><input type="text" id="grepText"> <button id="grepButton" disabled="disabled">search</button></div>
+    <div><input type="text" id="grepText" disabled="disabled"> <button id="grepButton" disabled="disabled">search</button></div>
     <div id="grep"></div>
   </div>
   </body>
