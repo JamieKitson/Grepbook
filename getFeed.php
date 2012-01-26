@@ -4,9 +4,6 @@
 // To page through older posts use until.
 // It seems that to page through newer statuses you have to use both until and since parameters.
 
-// error_reporting(E_ALL);
-// ini_set('display_errors', '1');
-
 define('YOUR_APP_ID', '277863212273184');
 
 //uses the PHP SDK.  Download from https://github.com/facebook/php-sdk
@@ -55,8 +52,8 @@ if (!$userId) {
 
   header("Content-Type: text/plain");
 
-  error_reporting(E_ALL);
-  ini_set('display_errors', '1');
+#  error_reporting(E_ALL);
+#  ini_set('display_errors', '1');
 
   // echo "$userId\n";
   
