@@ -17,9 +17,17 @@ then
   file=${dir}${userId}-$(echo $(od -An -N3 -i /dev/urandom))
 fi
 
-# getStatuses, optional parameter $sinceDate
-function getStatuses {
+# call with either "head" or "tail"
+function setUnixDate 
+{
+      line=$($1 -n 1 "$file")
+      engDate=$(echo "$line" | cut -d '|' -f 2 )
+      unixDate=$(date +%s -d "$(echo $engDate)")
+}
 
+# getStatuses, optional parameter $sinceDate
+function getStatuses 
+{
   newLines=0
   if [ -f "$file" ]
   then
@@ -37,9 +45,7 @@ function getStatuses {
 
     if [ -f "$file" ]
     then
-      lastLine=$(tail -n 1 "$file")
-      engDate=$(echo "$lastLine" | cut -d '|' -f 2 )
-      unixDate=$(date +%s -d "$(echo $engDate)")
+      setUnixDate "tail"
       lastDate=$(($unixDate - 1))
       params="until=$lastDate&"
     fi
@@ -63,16 +69,14 @@ function getStatuses {
 if [ -f "$file" ]
 then
 
-  firstLine=$(head -n 1 "$file")
-  engDate=$(echo "$firstLine" | cut -d '|' -f 2 )
-  unixDate=$(date +%s -d "$(echo $engDate)")
-  nextDate=$(($unixDate + 1))
-
 # echo $firstdate
 
   tmp=$(tempfile)
 
   mv "$file" "$tmp"
+
+  setUnixDate "head"
+  nextDate=$(($unixDate + 1))
 
   getStatuses $nextDate 
 
