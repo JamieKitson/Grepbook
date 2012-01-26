@@ -5,9 +5,9 @@ function go()
   $('#output').html('');
   $('#btnBackup').attr("disabled", true);
   stop = false;
-  statFile();
   getFeed();
   doDots();
+  statFile();
 }
 
 function doDots()
