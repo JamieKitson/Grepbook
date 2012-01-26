@@ -3,7 +3,7 @@
 define('YOUR_APP_ID', '277863212273184');
 
 //uses the PHP SDK.  Download from https://github.com/facebook/php-sdk
-require 'facebook-php-sdk-5a88ed7/src/facebook.php'; 
+require 'facebook-php-sdk/src/facebook.php'; 
 
 $facebook = new Facebook(array(
   'appId'  => YOUR_APP_ID,
