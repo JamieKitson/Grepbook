@@ -1,4 +1,4 @@
-# Grepbook(http://grepbook.co.uk)
+# <http://grepbook.co.uk>
 
 ## Known Issues
 
