@@ -2,19 +2,9 @@
 <html>
   <head>
     <script src="http://code.jquery.com/jquery-1.5.2.min.js"></script>
-    <script src="grep.js"></script>
-  <title>Grepbook - A simple backup/search tool for your Facebook news feed</title>
-  <style>
-    body { margin: 0; font-family: "lucida grande", tahoma, verdana, arial, sans-serif; }
-    h1 { background-color: #3B5998; border: 1px solid #133783; color: white; margin: 0; padding: 5px 37px; }
-    a { color: #3B5998; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    #content { margin: 0 20px; border: 1px solid #CCCCCC; border-top: none; }
-    #content>div { margin: 20px }
-    #content>div:first-child { margin-top: 0; padding-top: 20px }
-    #grep { font-size: 0.7em; }
-    #ack { font-size: 0.8em; }
-  </style>
+    <script src="ajax.js"></script>
+    <title>Grepbook - A simple backup/search tool for your Facebook news feed</title>
+    <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   <body>
     <h1>Grepbook</h1>
@@ -50,14 +40,14 @@
         if (response.status === 'connected') 
         {
           // userID = response.authResponse.userID;
-          $('#go').click(go);
-          $('#go').attr("disabled", false);
-          $('#grepButton').click(grep);
-          $('#grepButton').attr("disabled", false);
+          $('#btnBackup').click(go);
+          $('#btnBackup').attr("disabled", false);
+          $('#btnGrep').click(grep);
+          $('#btnGrep').attr("disabled", false);
           $("#grepText").keyup(function(event)
             {
               if(event.keyCode == 13){
-                $("#grepButton").click();
+                $("#btnGrep").click();
               }
             });
           $('#grepText').attr("disabled", false);
@@ -74,14 +64,14 @@
          d.getElementsByTagName('head')[0].appendChild(js);
        }(document));
     </script>
-    <button id="go" disabled="disabled">Backup</button>
+    <button id="btnBackup" disabled="disabled">Backup</button>
     </div>
     <div id="dots"></div>
     <div id="stat"></div>
     <div id="output"></div>
     <div id="searchform">
       <input type="text" id="grepText" disabled="disabled">
-      <button id="grepButton" disabled="disabled">Search</button>
+      <button id="btnGrep" disabled="disabled">Search</button>
     </div>
     <div id="grep"></div>
     <div id="ack">
