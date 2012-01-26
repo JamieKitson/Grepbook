@@ -5,7 +5,8 @@ Installation Notes
 ------------------
 
 You will need to create a "files" directory, writable by the www-data user. 
-This directory should not be browsable to preserve privacy.
+This directory should not be browsable to preserve privacy. You can acheive
+the latter with `Options -Indexes` in an .htaccess file.
 
 Known Issues
 ------------
