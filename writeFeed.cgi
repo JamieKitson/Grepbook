@@ -8,86 +8,96 @@ Content-Type: text/plain
 END
 
 dir="files/"
-newLines=0
 
 userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
-afile=$(find $dir -name "${userId}-*")
-if [ -z $afile ]
+file=$(find $dir -name "${userId}-*")
+if [ -z $file ]
 then
-  afile=${dir}${userId}-$(echo $(od -An -N3 -i /dev/urandom))
+  file=${dir}${userId}-$(echo $(od -An -N3 -i /dev/urandom))
 fi
 
-# call with $file to get statuses, optional second parameter $sinceDate
+# optional parameter $sinceDate
 function getStatuses {
 
-file=$1
+  newLines=0
+  if [ -f "$file" ]
+  then
+#    lastLine=$(tail -n 1 "$file")
+    newLines=$(wc -l < "$file")
+  fi
 
-if [ -f "$file" ]
-then
-  lastLine=$(tail -n 1 "$file")
-  newLines=$(wc -l < "$file")
-fi
+  lines=$(( $newLines - 1))
 
-lines=$(( $newLines - 1))
-
-while [ $newLines -gt $lines ]
+  while [ $newLines -gt $lines ]
 #for i in {0..2}
-do
+  do
 
-  lines=$newLines
+    lines=$newLines
 
-  params=""
+    params=""
 
-  if [ -n "$lastLine" ]
+  if [ -f "$file" ]
   then
-    engDate=$(echo "$lastLine" | cut -d '|' -f 2 )
+    lastLine=$(tail -n 1 "$file")
+#    if [ -n "$lastLine" ]
+#    then
+      engDate=$(echo "$lastLine" | cut -d '|' -f 2 )
 #   echo "Getting from $engDate"
-    lastdate=$(date +%s -d "$(echo $engDate)")
-    lastdate=$(($lastdate - 1))
-    params="until=$lastdate&"
-  fi
+      lastdate=$(date +%s -d "$(echo $engDate)")
+      lastdate=$(($lastdate - 1))
+      params="until=$lastdate&"
+    fi
 
-  if [ -n "$2" ]
-  then
-    params="${params}since=$2"
-  fi
+    if [ -n "$1" ]
+    then
+      params="${params}since=$1"
+    fi
 
 #  echo $params
 
-  curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getFeed.php?$params" >> $file
+    curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getFeed.php?$params" >> $file
 
-  lastLine=$(tail -n 1 "$file")
-  
-  newLines=$(wc -l < $file)
+#    lastLine=$(tail -n 1 "$file")
+    
+    newLines=$(wc -l < $file)
 # echo "File has $newLines lines"
 
-done
+  done
 
 }
 
-# get last date
-# mv $file $tmp
+# if file exists
+# get first date
+# mv $file to $tmp
+# get new posts > $file
+# cp $tmp > $file
+# fi
+# get older posts
 
-getStatuses $afile
+# if file exists get newer posts
+if [ -f "$file" ]
+then
 
-firstLine=$(head -n 1 "$file")
-
-
-   engDate=$(echo "$firstLine" | cut -d '|' -f 2 )
-    firstdate=$(date +%s -d "$(echo $engDate)")
-    firstdate=$(($firstdate + 1))
+  firstLine=$(head -n 1 "$file")
+  engDate=$(echo "$firstLine" | cut -d '|' -f 2 )
+  unixDate=$(date +%s -d "$(echo $engDate)")
+  nextDate=$(($unixDate + 1))
 
 # echo $firstdate
 
-tmp=$(tempfile)
-tmp2=$(tempfile)
+  tmp=$(tempfile)
 
-getStatuses $tmp $firstdate 
+  mv "$file" "$tmp"
 
-cat $tmp $afile > $tmp2
-cp $tmp2 $afile
+  getStatuses $nextDate 
 
-echo "Finished, backup file: <a href=\"$afile\">userId:$userId</a>"
+  $(cat "$tmp" >> "$file")
+
+fi
+
+getStatuses
+
+echo "Finished, backup file: <a href=\"$file\">userId:$userId</a>"
 
 exit
 

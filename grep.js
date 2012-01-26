@@ -1,54 +1,52 @@
 var stop;
-// var userID;
 
 function go()
 {
+  $('#output').html('');
   stop = false;
-  stat();
-  get();
-  dot();
+  statFile();
+  getFeed();
+  doDots();
 }
 
-function dot()
+function doDots()
 {
   if (stop)
     return;
   $('#dots').append('.');
-  setTimeout(dot, 1000);
+  setTimeout(doDots, 1000);
 }
 
-function stat()
+function ajaxCall(aUrl, sucFunc, stopOnErr)
+{
+  $.ajax({
+    url: aUrl,
+    success: sucFunc,
+    error: 
+      function (xhr, textStatus, thrownError) 
+      { 
+        if (stopOnErr)
+          stop = true;
+        alert("An error occured contacting " + aUrl + " status " + xhr.status + " error message: \n" + xhr.responseText); 
+      }
+    });
+}
+
+function statFile()
 {
   if (stop)
     return;
-  $.ajax({
-    url: '/stat.cgi', // ?' + userID,
-    success: gotStat,
-    error: 
-      function (xhr, textStatus, thrownError) 
-      { 
-        alert("An error occured contacting " + url + " status " + xhr.status + " error message: \n" + xhr.responseText); 
-      }
-    });
-  setTimeout(stat, 5000);
+  ajaxCall('/stat.cgi', gotStat, false);
+  setTimeout(statFile, 5000);
 }
 
 
-function get()
+function getFeed()
 {
-  $.ajax({
-    url: '/writeFeed.cgi',
-    success: got,
-    error: 
-      function (xhr, textStatus, thrownError) 
-      { 
-        stop = true;
-        alert("An error occured contacting " + url + " status " + xhr.status + " error message: \n" + xhr.responseText); 
-      }
-    });
+  ajaxCall('/writeFeed.cgi', gotFeed, true);
 }
 
-function got(s)
+function gotFeed(s)
 {
   stop = true;
   appendLine(s);
@@ -56,7 +54,7 @@ function got(s)
 
 function gotStat(s)
 {
-  $('#info').html(s);
+  $('#stat').html(s);
 }
 
 function appendLine(s)
@@ -67,17 +65,8 @@ function appendLine(s)
 function grep()
 {
   stop = false;
-  dot();
-  $.ajax({
-    url: '/grep.cgi?' + $('#grepText').val(),
-    success: gotGrep,
-    error: 
-      function (xhr, textStatus, thrownError) 
-      { 
-        stop = true;
-        alert("An error occured contacting " + url + " status " + xhr.status + " error message: \n" + xhr.responseText); 
-      }
-    });
+  doDots();
+  ajaxCall('/grep.cgi?' + ('#grepText').val(), gotGrep, true);
 }
 
 function gotGrep(s)
