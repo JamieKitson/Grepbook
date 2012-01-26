@@ -8,12 +8,14 @@ END
 
 userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
 
-for file in $(find files/ -name ${userId}-*)
-do
+file=$(find files/ -name ${userId}-*)
 
+if [ -z "$file" ]
+then
+  echo "Creating file..."
+else
   lastLine=$(tail -n 1 "$file")
   newLines=$(wc -l < "$file")
   engDate=$(echo "$lastLine" | cut -d '|' -f 2 )
   echo "File has $newLines lines, last date is $engDate "
-
-done
+fi
