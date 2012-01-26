@@ -71,12 +71,13 @@ then
 
 # echo $firstdate
 
+# have to do this ahead of the file move
+  setUnixDate "head"
+  nextDate=$(($unixDate + 1))
+
   tmp=$(tempfile)
 
   mv "$file" "$tmp"
-
-  setUnixDate "head"
-  nextDate=$(($unixDate + 1))
 
   getStatuses $nextDate 
 
