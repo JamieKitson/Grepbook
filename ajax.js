@@ -68,7 +68,7 @@ function grep()
 {
   stop = false;
   doDots();
-  ajaxCall('/grep.cgi?' + ('#grepText').val(), gotGrep, true);
+  ajaxCall('/grep.cgi?' + $('#grepText').val(), gotGrep, true);
 }
 
 function gotGrep(s)
