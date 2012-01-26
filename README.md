@@ -1,6 +1,14 @@
-# <http://grepbook.co.uk>
+<http://grepbook.co.uk>
+=======================
 
-## Known Issues
+Installation Notes
+------------------
+
+You will need to create a "files" directory, writable by the www-data user. 
+This directory should not be browsable to preserve privacy.
+
+Known Issues
+------------
 
 * Posts older than mid Sept 2008 with seven digit IDs (as apposed to twelve) 
   return "This content is currently unavailable" at facebook.com. See
