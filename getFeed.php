@@ -31,7 +31,7 @@ function writeLine($post)
   {
     $dt = strtotime($post['created_time']);
 //    $l = $l.date('D M d G:i:s O Y', $dt);
-    $l = $l.date(DATE_ISO8601, $dt);
+    $l = $l.date("Y-m-d H:i:sO", $dt);
   }
   $l = $l."|";
   $l = $l.ifExists('message', $post);
