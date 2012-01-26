@@ -35,9 +35,9 @@ function ajaxCall(aUrl, sucFunc, stopOnErr)
 
 function statFile()
 {
+  ajaxCall('/stat.cgi', gotStat, false);
   if (stop)
     return;
-  ajaxCall('/stat.cgi', gotStat, false);
   setTimeout(statFile, 5000);
 }
 
@@ -52,6 +52,7 @@ function gotFeed(s)
   stop = true;
   $('#btnBackup').attr("disabled", false);
   appendLine(s);
+  statFile();
 }
 
 function gotStat(s)
