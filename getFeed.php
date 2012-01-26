@@ -30,7 +30,8 @@ function writeLine($post)
   if (array_key_exists('created_time', $post))
   {
     $dt = strtotime($post['created_time']);
-    $l = $l.date('D M d G:i:s O Y', $dt);
+//    $l = $l.date('D M d G:i:s O Y', $dt);
+    $l = $l.date(DATE_ISO8601, $dt);
   }
   $l = $l."|";
   $l = $l.ifExists('message', $post);
@@ -42,8 +43,6 @@ function writeLine($post)
   return $dt;
 }
 
-// echo print_r($argv);
-
 if (!$userId) { 
 
   throw new Exception('Not logged in to Facebook.');
@@ -52,19 +51,12 @@ if (!$userId) {
 
   header("Content-Type: text/plain");
 
-#  error_reporting(E_ALL);
-#  ini_set('display_errors', '1');
-
-  // echo "$userId\n";
-  
   $params = '?limit=200';
   
   foreach ($_GET as $key => $value)
   {
     $params .= "&$key=$value";
   }
-
-  // echo "\n$params\n";
 
   $b = $facebook->api('/me/feed'.$params);
 

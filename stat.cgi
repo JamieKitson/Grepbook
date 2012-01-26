@@ -16,6 +16,6 @@ then
 else
   lastLine=$(tail -n 1 "$file")
   newLines=$(wc -l < "$file")
-  engDate=$(echo "$lastLine" | cut -d '|' -f 2 )
+  engDate=$(date -d "$(echo "$lastLine" | cut -d '|' -f 2 )")
   echo "File has $newLines lines, last date is $engDate "
 fi
