@@ -21,7 +21,7 @@ do
     echo "<span class=\"poster\">$3:</span>"
     echo "<span class=\"post\">$4</span>"
 #    echo $(echo $3 | sed -r 's/https?:\/\/[^ ]+/<a href="&" target="_blank">&<\/a>/g')
-    if [ -n "$4" ]
+    if [ -n "$5" ]
     then
       echo '<a href="'$5'" class="assoclink">Associated link</a>'
     fi
