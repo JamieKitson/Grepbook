@@ -34,6 +34,11 @@ function writeLine($post)
     $l = $l.date("Y-m-d H:i:sO", $dt);
   }
   $l = $l."|";
+  if (array_key_exists('from', $post))
+  {
+    $l = $l.ifExists('name', $post['from']);
+  }
+  $l = $l."|";
   $l = $l.ifExists('message', $post);
   $l = $l.ifExists('story', $post);
   $l = $l."|";
