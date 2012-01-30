@@ -18,7 +18,6 @@ function doDots()
   setTimeout(doDots, 1000);
 }
 
-// show error? parameter or debug setting. Combine with stopOnErr?
 function ajaxCall(aUrl, sucFunc, stopOnErr)
 {
   $.ajax({
@@ -28,8 +27,10 @@ function ajaxCall(aUrl, sucFunc, stopOnErr)
       function (xhr, textStatus, thrownError) 
       { 
         if (stopOnErr)
+        {
           stop = true;
-        alert("An error occured contacting " + aUrl + " status " + xhr.status + " error message: \n" + xhr.responseText); 
+          alert("An error occured contacting " + aUrl + " status " + xhr.status + " error message: \n" + xhr.responseText); 
+        }
       }
     });
 }
