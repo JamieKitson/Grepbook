@@ -18,6 +18,7 @@ function doDots()
   setTimeout(doDots, 1000);
 }
 
+// show error? parameter or debug setting. Combine with stopOnErr?
 function ajaxCall(aUrl, sucFunc, stopOnErr)
 {
   $.ajax({

@@ -19,6 +19,7 @@ $userId = $facebook->getUser();
 function ifExists($key, $arr)
 {
   if (array_key_exists($key, $arr))
+    // I should be encoding pipes here...
     return str_replace("\n", " ", $arr[$key]);
 }
 
@@ -39,6 +40,7 @@ function writeLine($post)
     $l = $l.ifExists('name', $post['from']);
   }
   $l = $l."|";
+  // ...or maybe here
   $l = $l.ifExists('message', $post);
   $l = $l.ifExists('story', $post);
   $l = $l."|";
