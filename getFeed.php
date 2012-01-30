@@ -27,25 +27,25 @@ function writeLine($post)
 { 
   $ids = explode("_", $post['id']);
   $l = $ids[1];
-  $l = $l."|";
+  $l .= "|";
   if (array_key_exists('created_time', $post))
   {
     $dt = strtotime($post['created_time']);
-//    $l = $l.date('D M d G:i:s O Y', $dt);
-    $l = $l.date("Y-m-d H:i:sO", $dt);
+//    $l .= date('D M d G:i:s O Y', $dt);
+    $l .= date("Y-m-d H:i:sO", $dt);
   }
-  $l = $l."|";
+  $l .= "|";
   if (array_key_exists('from', $post))
   {
-    $l = $l.ifExists('name', $post['from']);
+    $l .= ifExists('name', $post['from']);
   }
-  $l = $l."|";
+  $l .= "|";
   // ...or maybe here
-  $l = $l.ifExists('message', $post);
-  $l = $l.ifExists('story', $post);
-  $l = $l."|";
-  $l = $l.ifExists('link', $post);
-  $l = $l."\n";
+  $l .= ifExists('message', $post);
+  $l .= ifExists('story', $post);
+  $l .= "|";
+  $l .= ifExists('link', $post);
+  $l .= "\n";
   echo $l;
   return $dt;
 }
