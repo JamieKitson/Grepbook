@@ -17,7 +17,13 @@ do
     IFS="|"
     set -- $line
     date=$(date +"%d %b %Y %T" -d $2)
-    echo '<a href="http://facebook.com/'$userId'/posts/'$1'" target="_blank" class="datelink">'$date'</a>'
+    postId=$1
+    if [ $(expr length "$postId") -ge 12 ]
+    then
+      echo '<a href="http://facebook.com/'$userId'/posts/'$postId'" target="_blank" class="datelink">'$date'</a>'
+    else
+      echo "<span class=\"date\">$date</a>"
+    fi
     echo "<span class=\"poster\">$3:</span>"
     echo "<span class=\"post\">$4</span>"
 #    echo $(echo $3 | sed -r 's/https?:\/\/[^ ]+/<a href="&" target="_blank">&<\/a>/g')
