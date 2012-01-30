@@ -22,7 +22,7 @@ do
     then
       echo '<a href="http://facebook.com/'$userId'/posts/'$postId'" target="_blank" class="datelink">'$date'</a>'
     else
-      echo "<span class=\"date\">$date</a>"
+      echo "<span class=\"date\">$date</span>"
     fi
     echo "<span class=\"poster\">$3:</span>"
     echo "<span class=\"post\">$4</span>"
