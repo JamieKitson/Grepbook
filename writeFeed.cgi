@@ -46,6 +46,7 @@ function getStatuses
     if [ -f "$file" ]
     then
       setUnixDate "tail"
+# "until" is inclusive, and we don't want to include a status we already have
       lastDate=$(($unixDate - 1))
       params="until=$lastDate&"
     fi
@@ -73,6 +74,7 @@ then
 
 # have to do this ahead of the file move
   setUnixDate "head"
+# It looks like "since" is not inclusive, but what the hell
   nextDate=$(($unixDate + 1))
 
   tmp=$(tempfile)

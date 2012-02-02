@@ -31,7 +31,8 @@ function writeLine($post)
   if (array_key_exists('created_time', $post))
   {
     $dt = strtotime($post['created_time']);
-//    $l .= date('D M d G:i:s O Y', $dt);
+    // We could just replace T with a space here as the date's already in ISO8601
+    // (Linux's date v8.5 doesn't seem to like the T)
     $l .= date("Y-m-d H:i:sO", $dt);
   }
   $l .= "|";
