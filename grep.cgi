@@ -19,22 +19,33 @@ do
     set -- $line
     date=$(date +"%d %b %Y %T" -d $2)
     postId=$1; poster=$3; text=$4; link=$5; linkText=$6
+    
     if [ $(expr length "$postId") -ge 12 ]
     then
       echo '<a href="http://facebook.com/'$userId'/posts/'$postId'" target="_blank" class="datelink">'$date'</a>'
     else
       echo "<span class=\"date\">$date</span>"
     fi
+    
     echo "<span class=\"poster\">$poster:</span>"
-    echo "<span class=\"post\">$text</span>"
+    
+    if [ -z "$link" ] || [ -n "$linkText" ]
+    then
+      echo "<span class=\"post\">$text</span>"
+    fi
+
     if [ -n "$link" ]
     then
-      if [ -z "$linkText" ]
+      echo "<a href=\"$link\" class=\"assoclink"
+      if [ -n "$linkText" ]
       then
-        linkText="Associated link"
+        echo "\">$linkText"
+      else
+        echo " post\">$text"
       fi
-      echo "<a href=\"$link\" class=\"assoclink\">$linkText</a>"
+      echo "</a>"
     fi
+
     echo "<br>"
     c=$(( $c + 1 ))
   done
