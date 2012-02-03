@@ -98,8 +98,10 @@ function enableGrep()
   $("#grepText").keydown(
     function(event)
     {
-      if(event.keyCode == 13){
+      if(event.keyCode == 13)
+      {
         $("#btnGrep").click();
+        return false;
       }
     });
   $('#grepText').attr("disabled", false);
