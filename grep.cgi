@@ -27,7 +27,6 @@ do
     fi
     echo "<span class=\"poster\">$poster:</span>"
     echo "<span class=\"post\">$text</span>"
-#    echo $(echo $3 | sed -r 's/https?:\/\/[^ ]+/<a href="&" target="_blank">&<\/a>/g')
     if [ -n "$link" ]
     then
       if [ -z "$linkText" ]
