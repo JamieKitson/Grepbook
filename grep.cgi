@@ -18,24 +18,23 @@ do
     IFS="|"
     set -- $line
     date=$(date +"%d %b %Y %T" -d $2)
-    postId=$1
+    postId=$1; poster=$3; text=$4; link=$5; linkText=$6
     if [ $(expr length "$postId") -ge 12 ]
     then
       echo '<a href="http://facebook.com/'$userId'/posts/'$postId'" target="_blank" class="datelink">'$date'</a>'
     else
       echo "<span class=\"date\">$date</span>"
     fi
-    echo "<span class=\"poster\">$3:</span>"
-    echo "<span class=\"post\">$4</span>"
+    echo "<span class=\"poster\">$poster:</span>"
+    echo "<span class=\"post\">$text</span>"
 #    echo $(echo $3 | sed -r 's/https?:\/\/[^ ]+/<a href="&" target="_blank">&<\/a>/g')
-    if [ -n "$5" ]
+    if [ -n "$link" ]
     then
-      text="Associated link"
-      if [ -n "$6" ]
+      if [ -z "$linkText" ]
       then
-        text="$6"
+        linkText="Associated link"
       fi
-      echo "<a href=\"$5\" class=\"assoclink\">$text</a>"
+      echo "<a href=\"$link\" class=\"assoclink\">$linkText</a>"
     fi
     echo "<br>"
     c=$(( $c + 1 ))
