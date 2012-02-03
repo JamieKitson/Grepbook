@@ -36,14 +36,12 @@ do
 
     if [ -n "$link" ]
     then
-      echo "<a href=\"$link\" class=\"assoclink"
-      if [ -n "$linkText" ]
+      if [ -z "$linkText" ]
       then
-        echo "\">$linkText"
-      else
-        echo " post\">$text"
+        linkText="$text"
+        class="post"
       fi
-      echo "</a>"
+      echo "<a href=\"$link\" class=\"assoclink $class\">$linkText</a>"
     fi
 
     echo "<br>"
