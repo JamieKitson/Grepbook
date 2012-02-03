@@ -29,7 +29,12 @@ do
 #    echo $(echo $3 | sed -r 's/https?:\/\/[^ ]+/<a href="&" target="_blank">&<\/a>/g')
     if [ -n "$5" ]
     then
-      echo '<a href="'$5'" class="assoclink">Associated link</a>'
+      text="Associated link"
+      if [ -n "$6" ]
+      then
+        text="$6"
+      fi
+      echo "<a href=\"$5\" class=\"assoclink\">$text</a>"
     fi
     echo "<br>"
   done

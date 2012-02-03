@@ -46,6 +46,8 @@ function writeLine($post)
   $l .= ifExists('story', $post);
   $l .= "|";
   $l .= ifExists('link', $post);
+  $l .= "|";
+  $l .= ifExists('name', $post);
   $l .= "\n";
   echo $l;
   return $dt;
