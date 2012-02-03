@@ -8,6 +8,7 @@ END
 
 userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
 q="$1"
+c=0
 
 for file in $(find files/ -name ${userId}-*)
 do
@@ -37,8 +38,9 @@ do
       echo "<a href=\"$5\" class=\"assoclink\">$text</a>"
     fi
     echo "<br>"
+    c=$(( $c + 1 ))
   done
   echo "<p>"
-  echo $(grep -ic "$q" "$file")" results found."
+  echo "$c results found."
   unset IFS
 done
