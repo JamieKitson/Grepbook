@@ -61,14 +61,8 @@ if (!$userId) {
 
   header("Content-Type: text/plain");
 
-  $settings = parse_ini_file("settings.txt");
+  $params = "";
 
-  $FL = 'FeedLimit';
-  
-  $limit = array_key_exists($FL, $settings) && preg_match('/^\d*$/', $settings[$FL]) ? $settings[$FL] : '500';
-
-  $params = "?limit=$limit";
-  
   foreach ($_GET as $key => $value)
   {
     $params .= "&$key=$value";

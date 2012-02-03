@@ -8,6 +8,12 @@ Content-Type: text/plain
 
 END
 
+source settings.txt
+if [[ -z "$FeedLimit" ]] || [[ $FeedLimit == *[!0-9]* ]]
+then
+  FeedLimit=500
+fi
+
 dir="files/"
 userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
 file=$(find $dir -name "${userId}-*")
@@ -41,22 +47,22 @@ function getStatuses
 
     lines=$newLines
 
-    params=""
+    params="limit=$FeedLimit"
 
     if [ -f "$file" ]
     then
       setUnixDate "tail"
 # "until" is inclusive, and we don't want to include a status we already have
       lastDate=$(($unixDate - 1))
-      params="until=$lastDate&"
+      params="$params&until=$lastDate"
     fi
 
     if [ -n "$1" ]
     then
-      params="${params}since=$1"
+      params="$params&since=$1"
     fi
 
-#  echo $params
+  echo $params
 
     curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getFeed.php?$params" >> $file
 
