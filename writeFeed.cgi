@@ -62,7 +62,7 @@ function getStatuses
       params="$params&since=$1"
     fi
 
-  echo $params
+#  echo $params
 
     curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getFeed.php?$params" >> $file
 
