@@ -9,7 +9,7 @@ Content-Type: text/plain
 END
 
 source settings.txt
-if [[ -z "$FeedLimit" ]] || [[ $FeedLimit == *[!0-9]* ]]
+if [[ -z "$FeedLimit" || $FeedLimit == *[!0-9]* ]]
 then
   FeedLimit=500
 fi
