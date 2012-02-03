@@ -89,12 +89,13 @@ function gotFileExists(s)
   if (s.indexOf('Creating') == -1)
   {
     enableGrep();
+    // gotStat(s);
   }
 }
 
 function enableGrep()
 {
-  $("#grepText").keyup(
+  $("#grepText").keydown(
     function(event)
     {
       if(event.keyCode == 13){
