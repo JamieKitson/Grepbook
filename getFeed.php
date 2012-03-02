@@ -48,6 +48,9 @@ function writeLine($post)
   $l .= ifExists('link', $post);
   $l .= "|";
   $l .= ifExists('name', $post);
+  $l .= "|";
+  if (array_key_exists('comments', $post))
+    $l .= ifExists('count', $post['comments']);
   $l .= "\n";
   echo $l;
   return $dt;

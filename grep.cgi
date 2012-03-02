@@ -6,6 +6,16 @@ Content-Type: text/html
 
 END
 
+function postlink 
+{
+    if [ $(expr length "$postId") -ge 12 ]
+    then
+      echo '<a href="http://facebook.com/'$userId'/posts/'$postId'" target="_blank" class="datelink">'$1'</a>'
+    else
+      echo "<span class=\"date\">$date</span>"
+    fi
+}
+
 userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
 q="$1"
 c=0
@@ -18,15 +28,10 @@ do
     IFS="|"
     set -- $line
     date=$(date +"%d %b %Y %T" -d $2)
-    postId=$1; poster=$3; text=$4; link=$5; linkText=$6
+    postId=$1; poster=$3; text=$4; link=$5; linkText=$6; comments=$7
     
-    if [ $(expr length "$postId") -ge 12 ]
-    then
-      echo '<a href="http://facebook.com/'$userId'/posts/'$postId'" target="_blank" class="datelink">'$date'</a>'
-    else
-      echo "<span class=\"date\">$date</span>"
-    fi
-    
+    postlink $date
+
     echo "<span class=\"poster\">$poster:</span>"
     
     if [ -z "$link" ] || [ -n "$linkText" ]
@@ -42,6 +47,16 @@ do
         class="post"
       fi
       echo "<a href=\"$link\" class=\"assoclink $class\">$linkText</a>"
+    fi
+
+    if [ -n "$comments" ] && [ $comments -gt 0 ]
+    then
+      commentstext="$comments Comment"
+      if [ $comments -gt 1 ]
+      then
+        commentstext="${commentstext}s"
+      fi
+      postlink $commentstext
     fi
 
     echo "<br>"
