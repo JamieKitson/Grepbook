@@ -16,7 +16,7 @@ function postlink
     fi
 }
 
-userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
+userId=$(curl -sb "$HTTP_COOKIE" "http://$HTTP_HOST/getUserId.php")
 q="$1"
 c=0
 

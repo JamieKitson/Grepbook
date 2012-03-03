@@ -15,7 +15,7 @@ then
 fi
 
 dir="files/"
-userId=$(curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getUserId.php")
+userId=$(curl -sb "$HTTP_COOKIE" "http://$HTTP_HOST/getUserId.php")
 file=$(find $dir -name "${userId}-*")
 
 if [ -z "$file" ]
@@ -64,7 +64,7 @@ function getStatuses
 
 #  echo $params
 
-    curl -sb "$HTTP_COOKIE" "http://fb.kitten-x.com/getFeed.php?$params" >> $file
+    curl -sb "$HTTP_COOKIE" "http://$HTTP_HOST/getFeed.php?$params" >> $file
 
     newLines=$(wc -l < $file)
 
