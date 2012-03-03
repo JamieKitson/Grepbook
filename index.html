@@ -49,6 +49,7 @@
           $('#btnBackup').click(go);
           $('#btnBackup').attr("disabled", false);
           $('#btnGrep').click(grep);
+          $('#btnDelete').click(deleteFile);
         }
       } );
 
@@ -72,6 +73,11 @@
       <button id="btnGrep" disabled="disabled">Search</button>
     </div>
     <div id="grep"></div>
+    <div id="delete">
+      Deleting your backup file can be useful if it has become corrupted or you believe that there are missing posts, as
+      well as to ensure your privacy.<p>
+      <button id="btnDelete" disabled="disabled">Delete my backup file</button>
+    </div>
     <div id="ack">
       <a href="https://github.com/JamieKitson/Grepbook/" target="_blank">Grepbook source</a>.
       Written by <a href="http://jamiek.it" target="_blank">Jamie Kitson</a>.

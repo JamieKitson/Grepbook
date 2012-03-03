@@ -106,5 +106,11 @@ function enableGrep()
     });
   $('#grepText').attr("disabled", false);
   $('#btnGrep').attr("disabled", false);
+  $('#btnDelete').attr("disabled", false);
+}
+
+function deleteFile()
+{
+  ajaxCall('/delete.cgi', gotStat, false);
 }
 
