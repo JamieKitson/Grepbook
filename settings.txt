@@ -1,2 +1,2 @@
 
-FeedLimit=500
+FeedLimit=150
