@@ -4,14 +4,12 @@
 // To page through older posts use until.
 // It seems that to page through newer statuses you have to use both until and since parameters.
 
-define('YOUR_APP_ID', '277863212273184');
-
 //uses the PHP SDK.  Download from https://github.com/facebook/php-sdk
 require 'facebook-php-sdk/facebook.php'; 
 
 $facebook = new Facebook(array(
-  'appId'  => YOUR_APP_ID,
-  'secret' => file_get_contents('secret.txt'),
+  'appId'  => '277863212273184',
+  'secret' => trim(file_get_contents('secret.txt'))
 ));
 
 $userId = $facebook->getUser();

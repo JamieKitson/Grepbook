@@ -1,13 +1,11 @@
 <?php
 
-define('YOUR_APP_ID', '277863212273184');
-
 //uses the PHP SDK.  Download from https://github.com/facebook/php-sdk
 require 'facebook-php-sdk/facebook.php'; 
 
 $facebook = new Facebook(array(
-  'appId'  => YOUR_APP_ID,
-  'secret' => 'de7c62abf49a9e711c738421a9afd205',
+  'appId'  => '277863212273184',
+  'secret' => trim(file_get_contents('secret.txt'))
 ));
 
 $userId = $facebook->getUser();
