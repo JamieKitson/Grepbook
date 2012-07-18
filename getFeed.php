@@ -18,7 +18,7 @@ function ifExists($key, $arr)
 {
   if (array_key_exists($key, $arr))
     // I should be encoding pipes here...
-    return str_replace(array("\n", "\r"), " ", $arr[$key]);
+    return str_replace(array("\n", "\r", "|"), array(" ", " ", "&#x7C;"), $arr[$key]);
 }
 
 function writeLine($post)
