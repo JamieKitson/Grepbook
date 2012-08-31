@@ -7,9 +7,12 @@
 //uses the PHP SDK.  Download from https://github.com/facebook/php-sdk
 require 'facebook-php-sdk/facebook.php'; 
 
+$f = file('secret.php');
+$secret = trim($f[1]);
+
 $facebook = new Facebook(array(
   'appId'  => '277863212273184',
-  'secret' => trim(file_get_contents('secret.txt'))
+  'secret' => $secret
 ));
 
 $userId = $facebook->getUser();
