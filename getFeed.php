@@ -5,7 +5,7 @@
 // It seems that to page through newer statuses you have to use both until and since parameters.
 
 //uses the PHP SDK.  Download from https://github.com/facebook/php-sdk
-require 'facebook-php-sdk/facebook.php'; 
+require 'facebook-php-sdk/src/facebook.php'; 
 
 $f = file('secret.php');
 $secret = trim($f[1]);
