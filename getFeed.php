@@ -65,7 +65,7 @@ if (!$userId) {
 
   header("Content-Type: text/plain");
 
-  $params = "";
+  $params = "?";
 
   foreach ($_GET as $key => $value)
   {
